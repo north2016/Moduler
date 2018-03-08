@@ -1,0 +1,44 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 26
+
+
+    defaultConfig {
+        applicationId "com.easy.moduler.appbox"
+        minSdkVersion 17
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath false
+            }
+        }
+    }
+
+
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    if (isDebug.toBoolean()) {//调试阶段，只保证基本逻辑不报错
+        implementation project(":lib")
+    } else {//打包阶段，才真正的引入业务逻辑模块
+        implementation project(":module_a")
+        implementation project(":module_b")
+        implementation project(":module_service")
+    }
+}

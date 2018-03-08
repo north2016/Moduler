@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Moduler.iml" filepath="$PROJECT_DIR$/Moduler.iml" />
+      <module fileurl="file://$PROJECT_DIR$/annotation/annotation.iml" filepath="$PROJECT_DIR$/annotation/annotation.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/appbox/appbox.iml" filepath="$PROJECT_DIR$/appbox/appbox.iml" />
+      <module fileurl="file://$PROJECT_DIR$/apt/apt.iml" filepath="$PROJECT_DIR$/apt/apt.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lib/lib.iml" filepath="$PROJECT_DIR$/lib/lib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/module_a/module_a.iml" filepath="$PROJECT_DIR$/module_a/module_a.iml" />
+      <module fileurl="file://$PROJECT_DIR$/module_b/module_b.iml" filepath="$PROJECT_DIR$/module_b/module_b.iml" />
+      <module fileurl="file://$PROJECT_DIR$/module_service/module_service.iml" filepath="$PROJECT_DIR$/module_service/module_service.iml" />
+    </modules>
+  </component>
+</project>

@@ -1,0 +1,1 @@
+include ':app', ':lib', ':annotation', ':apt', ':module_service', ':module_a', ':module_b', ':appbox'
