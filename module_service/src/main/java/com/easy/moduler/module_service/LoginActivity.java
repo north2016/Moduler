@@ -3,6 +3,7 @@ package com.easy.moduler.module_service;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.TextView;
 
 import com.easy.moduler.annotation.Bus;
@@ -10,12 +11,13 @@ import com.easy.moduler.annotation.RouterRule;
 import com.easy.moduler.lib.Constants;
 import com.easy.moduler.lib.okbus.Event;
 import com.easy.moduler.lib.okbus.OkBus;
+import com.easy.moduler.lib.router.Router;
 import com.easy.moduler.lib.utils.LogUtils;
 
 
 @RouterRule("moduleHost://com.module.login")
 public class LoginActivity extends AppCompatActivity {
-    Event mEvent,mLogEvent;
+    Event mEvent, mLogEvent;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -40,6 +42,17 @@ public class LoginActivity extends AppCompatActivity {
         super.onDestroy();
         OkBus.getInstance().unRegister(mEvent);
         OkBus.getInstance().unRegister(mLogEvent);
+    }
+
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.bt_a:
+                Router.open(this, "moduleHost://com.module.moduleA?module=a");//子组件打开url时需要告知模块id，用于自动唤醒，主app则不需要
+                break;
+            case R.id.bt_b:
+                Router.open(this, "moduleHost://com.module.moduleB?module=b");
+                break;
+        }
     }
 }
 

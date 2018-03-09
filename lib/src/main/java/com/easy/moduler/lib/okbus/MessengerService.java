@@ -40,13 +40,14 @@ public class MessengerService extends Service {
         } catch (Exception e) { //等待中断
             e.printStackTrace();
         }
-        return resultRef.get().getBinder();
+        Messenger mMessenger = resultRef.get();
+        return mMessenger.getBinder();
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        LogUtils.i(Constants.TAG+" essengerService",  "MessengerService -->onCreate");
+        LogUtils.i(Constants.TAG + " essengerService", "MessengerService -->onCreate");
         mWorkThread = new WorkThread();
         mWorkThread.start();
 
@@ -55,7 +56,7 @@ public class MessengerService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        LogUtils.i(Constants.TAG+" essengerService",  "MessengerService -->onDestroy  quit");
+        LogUtils.i(Constants.TAG + " essengerService", "MessengerService -->onDestroy  quit");
         mWorkThread.quit();
     }
 
@@ -66,9 +67,10 @@ public class MessengerService extends Service {
         @Override
         public void run() {
             Looper.prepare();
-            LogUtils.i(Constants.TAG+" essengerService", "MessengerService -->new ServiceHandler");
+            LogUtils.i(Constants.TAG + " essengerService", "MessengerService -->new ServiceHandler");
             mHandler = new ServiceHandler();
             Messenger mMessenger = new Messenger(mHandler);
+            OkBus.getInstance().mServiceMessenger = mMessenger;
             try {
                 resultRef.set(mMessenger);
             } catch (Exception e) {

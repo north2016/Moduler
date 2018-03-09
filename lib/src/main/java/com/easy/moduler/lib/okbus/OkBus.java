@@ -136,8 +136,7 @@ public class OkBus {
         LogUtils.i("Message OkBus", "onEvent  " + (tag > 0 ? "[普通]" : "[服务]") + "  tag: " + hex);
 
         //1、本地先处理非服务消息
-        if (tag > 0) onLocalEvent(tag, data);
-
+        if (tag >= 0) onLocalEvent(tag, data);
 
         //2、如果是组建化，向服务器发消息
         if (isModule.get()) {
@@ -193,14 +192,15 @@ public class OkBus {
     private AtomicBoolean isModule = new AtomicBoolean(false);// 是否是模块化
     public Messenger mServiceMessenger;
     private BaseModule mBaseModule;
-    private int mModuleId;
+    public int mModuleId;
 
     public void initModule(BaseModule mBaseModule, Messenger mServiceMessenger, int mModuleId, Messenger mClientMessenger) {
         this.mServiceMessenger = mServiceMessenger;
         this.mModuleId = mModuleId;
         this.mBaseModule = mBaseModule;
-        mBaseModule.isConnected.set(true);
         isModule.set(true);
+        mBaseModule.isConnected.set(true);
+
         Message msg = Message.obtain();
         Bundle data = new Bundle();
         data.putInt(Constants.REGISTER_ID, mModuleId);//注册模块

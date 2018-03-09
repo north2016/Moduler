@@ -43,16 +43,10 @@ public class BaseAppModuleApp extends Application {
      * 连接服务器
      */
     public void connectService() {
-        LogUtils.i(Constants.TAG+" connectService", " ServiceConnection-->bindService");
         Intent intent = new Intent(MessengerService.class.getCanonicalName());// 5.0+ need explicit intent
         intent.setPackage(Constants.SERVICE_PACKAGE_NAME); // the package name of Remote Service
-        if (mBaseModule.getModuleId() == Constants.MODULE_S) {//服务器直接启动
-            startService(intent);
-            mBaseModule.afterConnected();
-        } else {//客户端连接服务器
-            boolean mIsBound = bindService(intent, mBaseModule.mConnection, BIND_AUTO_CREATE);
-            LogUtils.i(Constants.TAG+" connectService", " ServiceConnection-->bindService  mIsBound: " + mIsBound);
-        }
+        boolean mIsBound = bindService(intent, mBaseModule.mConnection, BIND_AUTO_CREATE);
+        LogUtils.i(Constants.TAG + " connectService", " ServiceConnection-->bindService  mIsBound: " + mIsBound);
     }
 
     public static BaseAppModuleApp getBaseApplication() {

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
+import android.text.TextUtils;
 
 import com.easy.moduler.lib.Constants;
 import com.easy.moduler.lib.utils.LogUtils;
@@ -63,7 +64,10 @@ public class ServiceBus {
         }
 
         //自动唤醒目标进程
-        if (okBus.isModule()) autoWakeUp(serviceId);
+        if (okBus.isModule()) {
+            String module_name = Integer.toHexString(Math.abs(serviceId)).substring(0, 1);
+            noticeModule(module_name, serviceId, null);
+        }
 
         //1、先注册回调
         okBus.register(serviceId - 1, msg -> {
@@ -74,14 +78,15 @@ public class ServiceBus {
         okBus.onEvent(serviceId);
     }
 
+
     /**
-     * 自动唤醒目标进程
+     * 唤醒目标进程
      *
-     * @param serviceId  服务ID
+     * @param module_name 模块名
+     * @param serviceId   服务ID
+     * @param url         要打开的url
      */
-    private void autoWakeUp(int serviceId) {
-        String module_name = Integer.toHexString(Math.abs(serviceId)).substring(0, 1);
-        LogUtils.logOnUI(Constants.TAG, "MessengerService -->NoticeService module_" + module_name);
+    public void noticeModule(String module_name, int serviceId, String url) {
         Intent ait = new Intent(NoticeService.class.getCanonicalName());// 5.0+ need explicit intent        //唤醒目标进程的服务Action名
         ait.setPackage(Constants.MODULE_PACKAGE_PRE + module_name); // the package name of Remote Service  //唤醒目标进程的包名
         BaseAppModuleApp.getBaseApplication().bindService(ait, new ServiceConnection() {
@@ -102,14 +107,20 @@ public class ServiceBus {
                     }
 
                     try {
-                        Thread.sleep(500);//给服务器和目标组件500ms联系的时间
+                        Thread.sleep(200);//给服务器和目标组件500ms联系的时间
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    //唤醒成功，继续发送异步请求，通知目标模块
-                    okBus.onEvent(serviceId);
+
                 } else {
                     LogUtils.logOnUI(Constants.TAG, module_name + "进程,本来就是醒的");
+                }
+
+                if (serviceId < 0) {  //唤醒成功，继续发送异步请求，通知目标模块
+                    okBus.onEvent(serviceId);
+                }
+                if (!TextUtils.isEmpty(url)) {  //目标url不为空，继续打开目标
+                    OkBus.getInstance().onEvent(Constants.ROUTER_OPEN_URL, url);
                 }
             }
 

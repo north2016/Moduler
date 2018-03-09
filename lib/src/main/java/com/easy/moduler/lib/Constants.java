@@ -15,6 +15,8 @@ public class Constants {
 
     //==================MessagerConstants============//
     public static final String TAG = "Message";
+
+    public static final String MODULE_NAME = "module";
     public static final String MESSAGE_DATA = "message_data";
     public static final String REGISTER_ID = "registerId";
     public static final String REGISTER_RES = "registerRes";//注册结果  0 失败 1 成功
@@ -32,6 +34,7 @@ public class Constants {
      * <p>
      * 模块下的事件  暂定为：模块名＋事件id   例如：0xa001
      */
+    public static final int ROUTER_OPEN_URL = 0x0000;//打开制定url
 
     public static final int MODULE_S = 0x0;//服务器标识
 
@@ -39,11 +42,11 @@ public class Constants {
 
 
     public static final int MODULE_A = 0xa;
-    public static final int MODULE_A_EVENT001 = 0xa001;
+    public static final int MODULE_A_EVENT001 = 0xa001;//a模块事件1
 
 
     public static final int MODULE_B = 0xb;
-    public static final int MODULE_B_EVENT001 = 0xb001;
+    public static final int MODULE_B_EVENT001 = 0xb001;//b模块事件1
 
     //==================模块间的服务定义============//
     /**

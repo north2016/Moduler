@@ -54,7 +54,7 @@ public class ServiceHandler extends Handler {
                 }
             } else {//发送事件类型的消息
                 String hex = Integer.toHexString(Math.abs(msg.what));
-                LogUtils.logOnUI(Constants.TAG, "handleMessage: msg = [Service:收到" + (msg.what > 0 ? "普通" : "服务") + "类型的消息:" + hex + "]-->[转发给自己的OkBus]");
+                LogUtils.i(Constants.TAG, "handleMessage: msg = [Service:收到" + (msg.what > 0 ? "普通" : "服务") + "类型的消息:" + hex + "]-->[转发给自己的OkBus]");
 
                 //1、转发给自己的OkBus:
                 OkBus.getInstance().onLocalEvent(msg.what, bundle.getSerializable(Constants.MESSAGE_DATA));
@@ -65,7 +65,7 @@ public class ServiceHandler extends Handler {
                     int moduleId = (int) keys.nextElement();
                     Messenger mMessenger = mClientMessengers.get(moduleId);
                     if (moduleId != msg.arg1) {//不是目标来源模块，进行分发
-                        LogUtils.logOnUI(Constants.TAG, "handleMessage:转发给其他模块的OkBus: 消息Id-->: " + (msg.what > 0 ? "普通" : "服务") + hex + "消息  -->模块Id: " + Integer.toHexString(moduleId));
+                        LogUtils.i(Constants.TAG, "handleMessage:转发给其他模块的OkBus: 消息Id-->: " + (msg.what > 0 ? "普通" : "服务") + hex + "消息  -->模块Id: " + Integer.toHexString(moduleId));
                         Message _msg = Message.obtain(msg);
                         try {
                             mMessenger.send(_msg);

@@ -1,11 +1,14 @@
 package com.easy.moduler.lib.router;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
-
+import com.easy.moduler.lib.Constants;
+import com.easy.moduler.lib.okbus.OkBus;
+import com.easy.moduler.lib.okbus.ServiceBus;
 import com.easy.moduler.lib.utils.StringUtils;
 
 import java.util.HashMap;
@@ -74,6 +77,26 @@ public class Router {
      * @return
      */
     public static boolean open(Context context, String url) {
+        if (OkBus.getInstance().isModule()) {
+            if (!openLocalUrl(context, url)) {
+                String module_name = RouteUtils.getQueryParameter(url, Constants.MODULE_NAME, String.class);
+                ServiceBus.getInstance().noticeModule(module_name,0,url);
+                return true;
+            }
+            return true;
+        } else {
+            return openLocalUrl(context, url);
+        }
+    }
+
+
+    /**
+     * 打开本地的指定url
+     *
+     * @param url
+     * @return
+     */
+    public static boolean openLocalUrl(Context context, String url) {
         if (context == null || url == null) return false;
         try {
             // 1 是否注册url - class
@@ -83,6 +106,9 @@ public class Router {
                 // 2 匹配到已注册的url - class，构造intent
                 Intent intent = new Intent(context, activityClazz);
                 intent.putExtra(INTENT_KEY_ROUTE_URL, url);
+                if (context instanceof Application) {
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                }
                 // 3 拦截器处理
                 if (routerInterceptor == null || !routerInterceptor.intercept(context, url, intent)) {
                     // 4 无拦截器，或者拦截器未完全拦截，则启动对应的页面
@@ -95,6 +121,7 @@ public class Router {
         }
         return false;
     }
+
 
     private static String getMatchRuleKey(String url) {
         if (url == null) return "";

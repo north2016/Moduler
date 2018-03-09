@@ -23,12 +23,11 @@ public class ClientHandler extends Handler {
         super.handleMessage(msg);
         Bundle bundle = msg.getData();
         boolean noticeFlag = bundle.getBoolean(Constants.NOTICE_MSG, false);
-        if (noticeFlag) {//唤醒通知，自动注册
-            BaseModule mBaseModule = BaseAppModuleApp.getBaseApplication().mBaseModule;
+        BaseModule mBaseModule = BaseAppModuleApp.getBaseApplication().mBaseModule;
+        if (noticeFlag && !mBaseModule.isConnected.get()) {//唤醒通知，自动注册
             OkBus.getInstance().initModule(mBaseModule, msg.replyTo, mBaseModule.getModuleId(), mBaseModule.mWorkThread.clientHandler);
             return;
         }
-
         int resCode = bundle.getInt(Constants.REGISTER_RES, -1);
         if (resCode < 0) {//收到普通消息
             String hex = Integer.toHexString(Math.abs(msg.what));
