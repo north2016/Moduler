@@ -77,7 +77,7 @@ public class ServiceBus {
     /**
      * 自动唤醒目标进程
      *
-     * @param serviceId
+     * @param serviceId  服务ID
      */
     private void autoWakeUp(int serviceId) {
         String module_name = Integer.toHexString(Math.abs(serviceId)).substring(0, 1);

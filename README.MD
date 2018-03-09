@@ -2,7 +2,7 @@
 
 ###组件化之核心技术点
 
-     在阅读了大部分组件化相关的文章和框架之后，大致能总结出以下几点：
+    在阅读了大部分组件化相关的文章和框架之后，大致能总结出以下几点：
         1、组件的路由的注册和中央路由的采集
         2、组件间的通信(跨进程)和打包之后的模块间通信(同进程)，以及其兼容(跨/同进程)
         3、组件向外提供服务，以及组建间的服务的同异步互调，以及其兼容(跨/同进程)
@@ -13,7 +13,11 @@
     1、最小代价组件化，最简单的配置、最灵活的切换
     2、组件路由自动化注册，中央路由自动化采集
     3、服务自动注册，兼容同异步，兼容跨/同进程
-    4、代码量少的可怜，实在一句多余的代码都不想写的懒人体验
+    4、OkBus实现的通信机制，兼容同异步，兼容跨/同进程，与传统使用方式完全   一样，无感知无差别
+    5、跨组件调用时自动唤醒，单个组件调试时无需手动打开目标组件，即使目标开启后被杀掉进程，同样可以唤醒加通信一步到位
+    6、代码量少的可怜，实在一句多余的代码都不想写的懒人体验
+
+
 
 
 
@@ -264,7 +268,61 @@ public class Module extends BaseModule {
         ServiceLoader<IModule> modules = ServiceLoader.load(IModule.class);
         for (IModule module : modules) module.init();
 ``` 
+   
+####第六步，自动唤醒，按需加载
 
+
+单个组件调试时，自动唤醒服务器，需要调用某个组件服务时，自动唤醒目标组件，服务器和目标组件打不打开，有没有被杀死，都能正常唤醒继续通信
+
+实现方案：
+   1、任意组件打开时，自动唤醒服务器
+
+
+   BaseAppModuleApp里面：
+
+``` 
+      Intent intent = new Intent(MessengerService.class.getCanonicalName());// 5.0+ need explicit intent
+      intent.setPackage(Constants.SERVICE_PACKAGE_NAME); // the package name of Remote Service
+      boolean mIsBound = bindService(intent, mBaseModule.mConnection, BIND_AUTO_CREATE);
+        
+``` 
+
+
+2、调用目标组件的服务时，自动唤醒目标组件
+``` 
+
+        Intent ait = new Intent(NoticeService.class.getCanonicalName()); //唤醒目标进程的服务Action名
+        ait.setPackage(Constants.MODULE_PACKAGE_PRE + module_name);   //唤醒目标进程的包名
+        BaseAppModuleApp.getBaseApplication().bindService(ait, new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                if (service != null) {
+                    LogUtils.logOnUI(Constants.TAG, "已经自动唤醒" + module_name);
+                    Messenger moduleNameMessenger = new Messenger(service);
+                    Message _msg = Message.obtain();
+                    Bundle _data = new Bundle();
+                    _data.putBoolean(Constants.NOTICE_MSG, true);
+                    _msg.setData(_data);
+                    _msg.replyTo = okBus.mServiceMessenger;//把服务器的信使给目标组件的信使，让他俩自己联系，这里仅仅是通知
+                    try {
+                        moduleNameMessenger.send(_msg);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    //唤醒成功，继续发送异步请求，通知目标模块
+                    okBus.onEvent(serviceId);
+                } else {
+                    LogUtils.logOnUI(Constants.TAG, module_name + "进程,本来就是醒的");
+                }
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+                LogUtils.logOnUI(Constants.TAG, "自动唤醒目标进程失败 module_name:" + module_name);
+            }
+        }, BIND_AUTO_CREATE);
+    }
+``` 
 ####其它
 
    1、主app壳的处理：
@@ -279,6 +337,12 @@ dependencies {
     }
 }
 ``` 
+
+     开发阶段，模块不稳定，直接引用，避免各种麻烦。
+
+     稍微稳定之后，可以直接使用一个编译好的aar包，减少编译工作量提升编译速度。
+
+     对于完全稳定，基本不会改的模块，直接引用仓库上的内容，在gradle中声明依赖就行了。
 
 2、组件只有当做单独APP运行时才有自己的application
 ``` 
