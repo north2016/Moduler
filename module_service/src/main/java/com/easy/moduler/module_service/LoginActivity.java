@@ -45,13 +45,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.bt_a:
-                Router.open(this, "moduleHost://com.module.moduleA?module=a");//子组件打开url时需要告知模块id，用于自动唤醒，主app则不需要
-                break;
-            case R.id.bt_b:
-                Router.open(this, "moduleHost://com.module.moduleB?module=b");
-                break;
+        int i = view.getId();
+        if (i == R.id.bt_a) {
+            Router.open(this, "moduleHost://com.module.moduleA?module=a");//子组件打开url时需要告知模块id，用于自动唤醒，主app则不需要
+        } else if (i == R.id.bt_b) {
+            Router.open(this, "moduleHost://com.module.moduleB?module=b");
         }
     }
 }
