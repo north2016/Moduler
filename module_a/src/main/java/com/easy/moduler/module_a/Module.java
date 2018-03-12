@@ -18,7 +18,7 @@ public class Module extends BaseModule {
     public void afterConnected() {
 
         ServiceBus.getInstance().registerService(Constants.SERVICE_A_UID, msg -> {
-            LogUtils.logOnUI(Constants.TAG, "afterConnected  hello进程收到[服务请求]消息:ServiceMessage-->hello:  " + Integer.toHexString(Math.abs(msg.what)));
+            LogUtils.logOnUI(Constants.TAG, "afterConnected  a 进程收到[服务请求]消息:ServiceMessage-->hello:  " + Integer.toHexString(Math.abs(msg.what)));
             return "10086";
         });
     }

@@ -27,7 +27,7 @@ public class AModuleActivity extends AppCompatActivity {
         EditText editText = findViewById(R.id.et_uid);
 
         ServiceBus.getInstance().registerService(Constants.SERVICE_A_UID, msg -> {
-            LogUtils.logOnUI(Constants.TAG, "hello进程收到[服务请求]消息:ServiceMessage-->hello:  " + Integer.toHexString(msg.what));
+            LogUtils.logOnUI(Constants.TAG, "a 进程收到[服务请求]消息:ServiceMessage-->hello:  " + Integer.toHexString(Math.abs(msg.what)));
             return editText.getText().toString();
         });
 

@@ -70,7 +70,7 @@ public class MessengerService extends Service {
             LogUtils.i(Constants.TAG + " essengerService", "MessengerService -->new ServiceHandler");
             mHandler = new ServiceHandler();
             Messenger mMessenger = new Messenger(mHandler);
-            OkBus.getInstance().mServiceMessenger = mMessenger;
+          //  OkBus.getInstance().mServiceMessenger = mMessenger;
             try {
                 resultRef.set(mMessenger);
             } catch (Exception e) {

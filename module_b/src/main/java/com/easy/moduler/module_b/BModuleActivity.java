@@ -32,8 +32,8 @@ public class BModuleActivity extends AppCompatActivity {
             tvLog.setText(msg.obj + "\n" + log);
         }, Bus.UI);
 
-        LogUtils.logOnUI(Constants.TAG, "main进程发送消息");
-        OkBus.getInstance().onEvent(Constants.MODULE_B_EVENT001, "main-->Message:恭喜发财！BBB");
+        LogUtils.logOnUI(Constants.TAG, "b 进程发送消息");
+        OkBus.getInstance().onEvent(Constants.MODULE_B_EVENT001, "b-->Message:恭喜发财！BBB");
 
         /**
          * 异步调用远端服务
@@ -41,9 +41,9 @@ public class BModuleActivity extends AppCompatActivity {
         findViewById(R.id.bt_1).setOnClickListener(v -> {
 
             ServiceBus.getInstance().fetchService(Constants.SERVICE_A_UID, msg -> {
-                LogUtils.logOnUI(Constants.TAG, "main进程收到[异步服务返回]消息:  获取到的UID-->" + msg.obj);
+                LogUtils.logOnUI(Constants.TAG, "b 进程收到[异步服务返回]消息:  获取到的UID-->" + msg.obj);
                 Toast.makeText(BModuleActivity.this,
-                        "main进程收到[异步服务返回]消息:  获取到的UID-->" + msg.obj,
+                        "b 进程收到[异步服务返回]消息:  获取到的UID-->" + msg.obj,
                         Toast.LENGTH_SHORT).show();
             });
         });
@@ -54,8 +54,8 @@ public class BModuleActivity extends AppCompatActivity {
         findViewById(R.id.bt_2).setOnClickListener(v -> {
             try {
                 String uid = ServiceBus.getInstance().fetchService(Constants.SERVICE_A_UID);
-                LogUtils.logOnUI(Constants.TAG, "main进程收到[同步服务返回]消息:  获取到的UID-->" + uid);
-                Toast.makeText(BModuleActivity.this, "main进程收到[同步服务返回]消息:  获取到的UID-->" + uid, Toast.LENGTH_SHORT).show();
+                LogUtils.logOnUI(Constants.TAG, "b 进程收到[同步服务返回]消息:  获取到的UID-->" + uid);
+                Toast.makeText(BModuleActivity.this, "b 进程收到[同步服务返回]消息:  获取到的UID-->" + uid, Toast.LENGTH_SHORT).show();
             } catch (Exception e) {
                 e.printStackTrace();
             }
